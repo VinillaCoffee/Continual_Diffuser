@@ -38,6 +38,9 @@ class TimeLimit(gym.Wrapper):
 
 class EnvVersionObsWrapper(gym.Wrapper):
     def __init__(self, env: gym.Env) -> None:
+        # 在调用父类初始化前，确保环境有 reward_range 属性
+        if not hasattr(env, 'reward_range'):
+            env.reward_range = (-float('inf'), float('inf'))
         super().__init__(env) 
         self.name = self.env.name
 

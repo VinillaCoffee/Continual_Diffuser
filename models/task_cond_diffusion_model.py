@@ -71,7 +71,10 @@ class TaskCondGaussianDiffusion(nn.Module):
 
     #------------------------------------------ sampling ------------------------------------------#
     def apply_condition(self, x, cond):
-        x = replaceable_condition(x=x, conditions=cond, start_dim=0, end_dim=self.observation_dim)
+        # 动态获取条件值的维度，确保与输入张量匹配
+        for t, val in cond.items():
+            # 使用条件值的维度来确定要替换的范围
+            x[:, t, :val.shape[-1]] = val.clone()
         return x
 
     def x_clip_opt(self, x, action_range=(-0.99999, 0.99999)):
